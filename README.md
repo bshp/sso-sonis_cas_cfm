@@ -1,1 +1,1 @@
-# sso-sonis_cas_java
+# CAS SSO for Sonis using Coldfusion
