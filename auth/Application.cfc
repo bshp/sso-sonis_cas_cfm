@@ -11,8 +11,8 @@ component displayname="Application" author="Nic Raboy" output="false" {
     this.sessionTimeout = createTimeSpan(0, 0, 60, 0);
     this.sessionManagement = true;
 
-    variables.hasCAS = true; // True if CAS should be used
-    variables.hasSSL = true; // True if SSL should be used
+    variables.hasCAS = true;
+    variables.hasSSL = true;
     variables.cas_url = "https://cas.example.edu/cas/";
     variables.cas_service_url = "https://sonis.example.edu";
     variables.cas_direct_forwarding = true;
