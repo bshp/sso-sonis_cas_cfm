@@ -88,21 +88,22 @@ SELECT TOP 1 RTRIM(modstat) AS modstat FROM vw_ssoLogin WHERE nmldap = '#session
         SELECT RTRIM(#session.bshpPrefix#id) AS soc_sec, RTRIM(#session.bshpPrefix#disabled) AS disabled, RTRIM(#session.bshpPrefix#pin) AS pin
         FROM vw_ssoLogin WHERE #session.bshpPrefix#ldap = '#session.uid#'
     </cfquery>
+    <!--- if not faculty, staff, or student, show them unauthorized view --->
     <cfif session.bshpStatus eq "TBD">
         <div id="notice">
             <p>Your account does not yet include Sonis access. Students, contact the registrar's office. Faculty or Staff, contact the IS Department</p>
         </div>
     <cfelseif getAttributes.disabled eq "1">
         <div id="notice">
-            <p>Your account has been locked for your own security, please <a href="https://support.bshp.edu">submit a ticket to have it unlocked.</a></p>
+            <p>Your account has been locked from to many failed login attempts, please <a href="https://support.bshp.edu">submit a ticket to have it unlocked.</a></p>
         </div>
-    <!--- does not have multiprofiles, just log them in --->
+    <!--- does not have multi-profiles, just log them in --->
     <cfelseif getAttributes.disabled eq "0" and getProfiles.multiprof eq "0">
         <cfset session.bshpPID = getAttributes.soc_sec >
         <cfset session.bshpPIN = getAttributes.pin >
         <cfset session.bshpModStat = session.bshpStatus >
         <cfinclude template="forms/postForm.cfm">
-    <!--- has profiles so give them the option --->
+    <!--- has multi-profiles so give them the option --->
     <cfelseif getProfiles.multiprof eq "1">
         <cfinclude template="forms/choiceForm.cfm">
     <!--- needed for any other reason, a catch all --->
