@@ -89,15 +89,14 @@
 			<cfset session.module = 'ADMIN'>
 			<cfset session.cur_module = 'administrator'>
 			<cfset client.accessstring = 'A D M I N I S T R A T I O N'>
-			<cfset client.addr_search = '4'>
-			<cfset client.nmtasklist = 'LDP,ANS,AWD,BDT,CHG,CRD,DSL,EWL,HOS,OGR,MPL,OBC,COV,OCR,OLV,OPR,ORH,OTC,OWL,PFC,POV,ADN,ADS,SSN,TMG,VRC,PAS,VME,VMP,WHD'>
 			<cfset session.PREF_LANG = 'en_US'>
 			<cfset client.loginpage = 'admnsect.cfm'>
 		<CFINCLUDE template="./common/randomizer.cfm">
 			<cfset sc=#randnum#>
 			<cfset Session.sec_id=#sc#>
+			<!---
 			<cflocation url = "../#client.s_page##trim(client.s_list)#" addtoken="No">
-		<!---
+			--->
 		<form action="LoginProc.cfm" method="post" name="admnForm" id="admnForm">
 			<input type="hidden" name="USER_ID" value="<cfoutput>#form.PID#</cfoutput>">
 			<input type="hidden" name="PASSWORD" value="<cfoutput>#form.PIN#</cfoutput>">
@@ -105,6 +104,5 @@
 		<script>
 			document.admnForm.submit();
 		</script>
-		--->
 	</cfif>
 </cfif>
