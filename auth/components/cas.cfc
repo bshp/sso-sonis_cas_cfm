@@ -106,7 +106,7 @@ component displayname="CAS" author="Nic Raboy" output="false" {
      */
     public void function logout() output="false" {
         variables.username = "";
-        location(variables.cas_url & "logout" & iif(len(variables.default_landing_url), de("?destination=" & variables.default_landing_url), de("")), false);
+        location(variables.cas_url & "logout" & iif(len(variables.default_landing_url), de("?service=" & variables.service_url), de("")), false);
     }  
 
     /*
