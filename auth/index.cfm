@@ -30,7 +30,6 @@
 <!--- Set datasourceName to Sonis DS name in CF --->
 <cfset sonisds = "datasourceName">
 <cfset session.uid = session.cfcas.getUsername()>
-<cfset session.bshpModstat = getAffiliation.modstat>
 <!---
 <cfquery name="getAffiliation" datasource="#sonisds#">
 SELECT TOP 1 RTRIM(modstat) AS modstat FROM vw_ssoLogin WHERE nmldap = '#session.uid#' AND modstat IN('FA','SF','ST')
@@ -44,52 +43,54 @@ SELECT TOP 1 RTRIM(modstat) AS modstat FROM vw_ssoLogin WHERE nmldap = '#session
     SELECT RTRIM(multiprof) AS multiprof, RTRIM(modstat) AS modstat FROM vw_ssoLogin WHERE nmldap = '#session.uid#'
 </cfquery>
 
+<cfset session.ssoModstat = getAffiliation.modstat>
+
 <cfif isDefined("form.submit")>
     <!--- clear current session vars --->
-    <cfset session.bshpStatus = "">
-    <cfset session.bshpPrefix = "">
+    <cfset session.ssoStatus = "">
+    <cfset session.ssoPrefix = "">
     <!--- set new vars based on preferred submission --->
     <cfif (form.submit) eq "Faculty">
-        <cfset session.bshpStatus = "FA">
-        <cfset session.bshpPrefix = "nm">
+        <cfset session.ssoStatus = "FA">
+        <cfset session.ssoPrefix = "nm">
     </cfif>
     <cfif (form.submit) eq "Staff">
-        <cfset session.bshpStatus = "ADMN">
-        <cfset session.bshpPrefix = "sec">
+        <cfset session.ssoStatus = "ADMN">
+        <cfset session.ssoPrefix = "sec">
     </cfif>
     <cfquery name="getAttributes" datasource="#sonisds#">
-        SELECT RTRIM(#session.bshpPrefix#id) AS soc_sec, RTRIM(#session.bshpPrefix#disabled) AS disabled, RTRIM(#session.bshpPrefix#pin) AS pin
-        FROM vw_ssoLogin WHERE #session.bshpPrefix#ldap = '#session.uid#'
+        SELECT RTRIM(#session.ssoPrefix#id) AS soc_sec, RTRIM(#session.ssoPrefix#disabled) AS disabled, RTRIM(#session.ssoPrefix#pin) AS pin
+        FROM vw_ssoLogin WHERE #session.ssoPrefix#ldap = '#session.uid#'
     </cfquery>
-    <cfset session.bshpPID = getAttributes.soc_sec >
-    <cfset session.bshpPIN = getAttributes.pin >
-    <cfset session.bshpModStat = session.bshpStatus >
+    <cfset session.ssoPID = getAttributes.soc_sec >
+    <cfset session.ssoPIN = getAttributes.pin >
+    <cfset session.ssoModStat = session.ssoStatus >
     <cfinclude template="forms/postForm.cfm">
     <!--- Not submitted yet --->
 <cfelse>
     <!--- Staff Attributes --->
-    <cfif session.bshpModstat eq "SF">
-        <cfset session.bshpPrefix = "sec">
-        <cfset session.bshpStatus = "ADMN">
+    <cfif session.ssoModstat eq "SF">
+        <cfset session.ssoPrefix = "sec">
+        <cfset session.ssoStatus = "ADMN">
     <!--- Student Attributes --->
-    <cfelseif session.bshpModstat eq "ST">
-        <cfset session.bshpPrefix = "nm">
-        <cfset session.bshpStatus = "ST">
+    <cfelseif session.ssoModstat eq "ST">
+        <cfset session.ssoPrefix = "nm">
+        <cfset session.ssoStatus = "ST">
     <!--- Faculty Attributes --->
-    <cfelseif session.bshpModstat eq "FA">
-        <cfset session.bshpPrefix = "nm">
-        <cfset session.bshpStatus = "FA">
+    <cfelseif session.ssoModstat eq "FA">
+        <cfset session.ssoPrefix = "nm">
+        <cfset session.ssoStatus = "FA">
     <!--- All Other Modstats not valid --->
     <cfelse>
-        <cfset session.bshpStatus = "TBD">
-        <cfset session.bshpPrefix = "nm">
+        <cfset session.ssoStatus = "TBD">
+        <cfset session.ssoPrefix = "nm">
     </cfif>
     <cfquery name="getAttributes" datasource="#sonisds#">
-        SELECT RTRIM(#session.bshpPrefix#id) AS soc_sec, RTRIM(#session.bshpPrefix#disabled) AS disabled, RTRIM(#session.bshpPrefix#pin) AS pin
-        FROM vw_ssoLogin WHERE #session.bshpPrefix#ldap = '#session.uid#'
+        SELECT RTRIM(#session.ssoPrefix#id) AS soc_sec, RTRIM(#session.ssoPrefix#disabled) AS disabled, RTRIM(#session.ssoPrefix#pin) AS pin
+        FROM vw_ssoLogin WHERE #session.ssoPrefix#ldap = '#session.uid#'
     </cfquery>
     <!--- if not faculty, staff, or student, show them unauthorized view --->
-    <cfif session.bshpStatus eq "TBD">
+    <cfif session.ssoStatus eq "TBD">
         <div id="notice">
             <p>Your account does not yet include Sonis access. Students, contact the registrar's office. Faculty or Staff, contact the IS Department</p>
         </div>
@@ -99,9 +100,9 @@ SELECT TOP 1 RTRIM(modstat) AS modstat FROM vw_ssoLogin WHERE nmldap = '#session
         </div>
     <!--- does not have multi-profiles, just log them in --->
     <cfelseif getAttributes.disabled eq "0" and getProfiles.multiprof eq "0">
-        <cfset session.bshpPID = getAttributes.soc_sec >
-        <cfset session.bshpPIN = getAttributes.pin >
-        <cfset session.bshpModStat = session.bshpStatus >
+        <cfset session.ssoPID = getAttributes.soc_sec >
+        <cfset session.ssoPIN = getAttributes.pin >
+        <cfset session.ssoModStat = session.ssoStatus >
         <cfinclude template="forms/postForm.cfm">
     <!--- has multi-profiles so give them the option --->
     <cfelseif getProfiles.multiprof eq "1">
