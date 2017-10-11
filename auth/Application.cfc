@@ -14,7 +14,7 @@ component displayname="Application" author="Nic Raboy" output="false" {
     variables.hasCAS = true;
     variables.hasSSL = true;
     variables.cas_url = "https://cas.example.edu/cas/";
-    variables.cas_service_url = "https://sonis.example.edu";
+    variables.cas_service_url = "https://sonis.example.edu/auth/index.cfm";
     variables.cas_direct_forwarding = true;
 
     /*
