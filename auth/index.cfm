@@ -40,8 +40,18 @@ SELECT TOP 1 RTRIM(modstat) AS modstat FROM vw_ssoLogin WHERE nmldap = '#session
 </cfquery>
 
 <cfquery name="getProfiles" datasource="#sonisds#">
-    SELECT RTRIM(multiprof) AS multiprof, RTRIM(modstat) AS modstat FROM vw_ssoLogin WHERE nmldap = '#session.uid#'
+    SELECT name.ldap_id, security.ldap_id AS sec_id, faculty.soc_sec 
+	FROM name 
+		INNER JOIN security ON name.soc_sec = security.soc_sec 
+		INNER JOIN faculty ON name.soc_sec = faculty.soc_sec 
+	WHERE name.ldap_id = '#session.uid#'
 </cfquery>
+
+<cfif getProfiles.ldap_id eq getProfiles.sec_id and getProfiles.RecordCount gt 0>
+	<cfset session.ssoMulti = "1">
+<cfelse>
+	<cfset session.ssoMulti = "0">
+</cfif>
 
 <cfset session.ssoModstat = getAffiliation.modstat>
 
@@ -99,13 +109,13 @@ SELECT TOP 1 RTRIM(modstat) AS modstat FROM vw_ssoLogin WHERE nmldap = '#session
             <p>Your account has been locked from to many failed login attempts, please <a href="https://support.bshp.edu">submit a ticket to have it unlocked.</a></p>
         </div>
     <!--- does not have multi-profiles, just log them in --->
-    <cfelseif getAttributes.disabled eq "0" and getProfiles.multiprof eq "0">
+    <cfelseif getAttributes.disabled eq "0" and session.ssoMulti eq "0">
         <cfset session.ssoPID = getAttributes.soc_sec >
         <cfset session.ssoPIN = getAttributes.pin >
         <cfset session.ssoModStat = session.ssoStatus >
         <cfinclude template="forms/postForm.cfm">
     <!--- has multi-profiles so give them the option --->
-    <cfelseif getProfiles.multiprof eq "1">
+    <cfelseif session.ssoMulti eq "1">
         <cfinclude template="forms/choiceForm.cfm">
     <!--- needed for any other reason, a catch all --->
     <cfelse>
