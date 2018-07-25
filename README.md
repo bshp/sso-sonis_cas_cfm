@@ -13,5 +13,9 @@ Index.cfm and/or db view will need to be modified if not using ldap_id
 Set CAS login URL and Sonis service url in application.cfc
 Edit 'datasourceName' in Index.cfm to your Sonis datasource name that is set in CF admin
 
+#### Issues
+Noticed with Coldfusion 11 it would not work till I updated java, so
+Update JDK/JRE in Coldfusion to Java 8 u140 or later, also ensure that Java Cryptography Extension (JCE) Unlimited Strength files are copied to jre/lib/security
+
 #### 3rd Party CFC Cas Client
 application.cfc and cas.cfc by Nic Raboy, great find for this use case.
