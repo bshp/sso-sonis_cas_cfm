@@ -50,7 +50,7 @@ SELECT TOP 1 RTRIM(modstat) AS modstat FROM vw_ssoLogin WHERE nmldap = '#session
 <cfquery name="getProfiles" datasource="#sonisds#">
     SELECT name.ldap_id, security.ldap_id AS sec_id, faculty.soc_sec 
 	FROM name 
-		INNER JOIN security ON name.soc_sec = security.soc_sec 
+		INNER JOIN security ON name.soc_sec = security.soc_sec AND security.disabled = '0'
 		INNER JOIN faculty ON name.soc_sec = faculty.soc_sec 
 	WHERE name.ldap_id = '#session.uid#'
 </cfquery>
